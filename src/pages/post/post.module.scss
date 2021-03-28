@@ -10,6 +10,8 @@
 }
 
 article.articleContent {
+  padding: 2rem 0;
+
   h1 {
     font-size: 3rem;
     margin: 2rem 0;
@@ -28,6 +30,12 @@ article.articleContent {
     color: var(--highlight-color);
   }
 
+  .editedInfo {
+    font-style: italic;
+    color: var(--gray-300);
+    font-size: 0.9rem;
+  }
+
   > section {
     h2,
     h3,
@@ -42,7 +50,7 @@ article.articleContent {
     }
 
     p + p {
-      margin-top: 1rem;
+      margin-top: 1.25rem;
     }
 
     li {
@@ -52,6 +60,46 @@ article.articleContent {
 
     li + li {
       margin-top: 0.5rem;
+    }
+  }
+}
+
+hr.diviserContent {
+  border-color: rgba(134, 134, 134, 0.445);
+  margin: 2rem 0 3rem;
+}
+
+.postsFooter {
+  max-width: 720px;
+  margin: 0 auto 5rem;
+  padding: 0 1rem;
+
+  .nextAndPrevPage {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem 0 3rem;
+
+    a {
+      transition: filter 0.2s;
+      flex: 1;
+
+      &:hover {
+        filter: brightness(0.8);
+      }
+
+      h3 {
+        font-weight: 400;
+        margin-bottom: 0.4rem;
+      }
+
+      span {
+        color: var(--highlight-color);
+      }
+    }
+
+    a.nextPage {
+      text-align: right;
     }
   }
 }

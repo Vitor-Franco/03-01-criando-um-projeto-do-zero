@@ -27,7 +27,6 @@
 
 body {
   background-color: var(--background);
-  color: var(--white);
 }
 
 body,
@@ -46,4 +45,18 @@ button {
 a {
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--white);
+}
+
+p {
+  color: var(--gray-300);
 }

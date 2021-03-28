@@ -6,15 +6,18 @@ import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
 import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
 import Head from 'next/head';
+import Link from 'next/link';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import CommentsField from '../../components/CommentsField';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -30,14 +33,29 @@ interface Post {
   };
 }
 
-interface PostProps {
-  post: Post;
+interface NextAndPrevPosts {
+  uid: string;
+  data: {
+    title: string;
+  };
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+interface PostProps {
+  post: Post;
+  nextPost: NextAndPrevPosts;
+  prevPost: NextAndPrevPosts;
+  preview: boolean;
+}
+
+export default function Post({
+  post,
+  nextPost,
+  prevPost,
+  preview,
+}: PostProps): JSX.Element {
   const router = useRouter();
 
-  const wordsInBodyContent = post.data.content.reduce((acc, value, index) => {
+  const wordsInBodyContent = post.data.content.reduce((acc, value) => {
     const body = PrismicDOM.RichText.asText(value.body).split(/\s/g);
     const heading = value.heading.split(/\s/g);
 
@@ -99,6 +117,18 @@ export default function Post({ post }: PostProps): JSX.Element {
               <span>{readTiming && `${readTiming} min`}</span>
             </div>
           </div>
+          <div>
+            <span className={styles.editedInfo}>
+              *
+              {format(
+                new Date(post.last_publication_date),
+                "'editado em' d MMM yyyy, 'às' HH:mm",
+                {
+                  locale: ptBR,
+                }
+              )}
+            </span>
+          </div>
 
           {post.data.content.map(content => {
             return (
@@ -114,7 +144,44 @@ export default function Post({ post }: PostProps): JSX.Element {
             );
           })}
         </article>
+        <hr className={styles.diviserContent} />
       </main>
+
+      <footer className={styles.postsFooter}>
+        <section className={styles.nextAndPrevPage}>
+          {prevPost.data && (
+            <Link href={`/post/${prevPost.uid}`}>
+              <a>
+                <h3>{prevPost.data.title}</h3>
+                <span>Post Anterior</span>
+              </a>
+            </Link>
+          )}
+
+          {nextPost.data && (
+            <Link href={`/post/${nextPost.uid}`}>
+              <a className={styles.nextPage}>
+                <h3>{nextPost.data.title}</h3>
+                <span>Próximo Post</span>
+              </a>
+            </Link>
+          )}
+        </section>
+
+        <CommentsField />
+
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview">
+              <a>
+                <button type="button" className={commonStyles.previewMode}>
+                  <span>Sair do modo Preview</span>
+                </button>
+              </a>
+            </Link>
+          </aside>
+        )}
+      </footer>
     </>
   );
 }
@@ -122,7 +189,8 @@ export default function Post({ post }: PostProps): JSX.Element {
 export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient();
   const posts = await prismic.query(
-    Prismic.Predicates.at('document.type', 'posts')
+    Prismic.Predicates.at('document.type', 'posts'),
+    { page: 1, pageSize: 3 }
   );
 
   const pathsInAPI = posts.results.map(post => {
@@ -138,43 +206,80 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async context => {
-  const { slug } = context.params;
-
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview = false,
+  previewData = {},
+}) => {
+  const { slug } = params;
+  const { ref } = previewData;
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('posts', String(slug), {
-    pageSize: 1,
-    page: 1,
-  });
 
-  const dateFormatted = format(
-    new Date(response.first_publication_date),
-    'd MMM yyyy',
-    {
-      locale: ptBR,
-    }
-  );
+  let response;
+  let nextPost;
+  let prevPost;
+  if (!ref) {
+    response = await prismic.getByUID('posts', String(slug), {
+      pageSize: 1,
+      page: 1,
+    });
 
-  const contentConvertedHTML = response.data.content.map(content => {
-    return {
-      heading: content.heading,
-      body: { text: content.body },
-    };
-  });
+    nextPost = await prismic.query(
+      [
+        Prismic.Predicates.at('document.type', 'posts'),
+        Prismic.Predicates.dateAfter(
+          'document.first_publication_date',
+          response.first_publication_date
+        ),
+      ],
+      { pageSize: 1 }
+    );
 
-  const postHandled = {
-    first_publication_date: response.first_publication_date,
-    data: {
-      title: response.data.title,
-      banner: response.data.banner,
-      author: response.data.author,
-      content: response.data.content,
-    },
-  };
+    prevPost = await prismic.query(
+      [
+        Prismic.Predicates.at('document.type', 'posts'),
+        Prismic.Predicates.dateBefore(
+          'document.first_publication_date',
+          response.first_publication_date
+        ),
+      ],
+      { pageSize: 1 }
+    );
+  } else {
+    response = await prismic.getSingle('posts', { ref });
+  }
+
+  // const dateFormatted = format(
+  //   new Date(response.first_publication_date),
+  //   'd MMM yyyy',
+  //   {
+  //     locale: ptBR,
+  //   }
+  // );
+
+  // const contentConvertedHTML = response.data.content.map(content => {
+  //   return {
+  //     heading: content.heading,
+  //     body: { text: content.body },
+  //   };
+  // });
+
+  // const postHandled = {
+  //   first_publication_date: response.first_publication_date,
+  //   data: {
+  //     title: response.data.title,
+  //     banner: response.data.banner,
+  //     author: response.data.author,
+  //     content: response.data.content,
+  //   },
+  // };
 
   return {
     props: {
       post: response,
+      preview,
+      nextPost: nextPost?.results[0] ?? {},
+      prevPost: prevPost?.results[0] ?? {},
     },
   };
 };
