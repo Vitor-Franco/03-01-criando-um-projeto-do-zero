@@ -55,7 +55,7 @@ export default function Post({
 }: PostProps): JSX.Element {
   const router = useRouter();
 
-  const wordsInBodyContent = post.data.content.reduce((acc, value) => {
+  const wordsInBodyContent = post?.data.content.reduce((acc, value) => {
     const body = PrismicDOM.RichText.asText(value.body).split(/\s/g);
     const heading = value.heading.split(/\s/g);
 
