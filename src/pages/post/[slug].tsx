@@ -168,7 +168,7 @@ export default function Post({
           )}
         </section>
 
-        <CommentsField />
+        <CommentsField slug={router.query.slug[0]} />
 
         {preview && (
           <aside>
