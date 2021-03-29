@@ -21,13 +21,13 @@ Este projeto utiliza as seguintes tecnologias:
 
 ## 🔥 Preview
 
-[spacetravelling](https://spacetravelling-vf.vercel.app/)
+Clique na imagem para ver a preview do blog. Ou se preferir clique [aqui](https://spacetravelling-vf.vercel.app/).
 
 <br>
 
 <p align="center">
   <a href="https://spacetravelling-vf.vercel.app/" target="_blank">
-    <img alt="Space Travelling" title="Space Travelling" width="150px" src=".github/spacetravelling-logo.png" />
+    <img alt="Space Travelling" title="Space Travelling" width="250px" src=".github/spacetravelling-logo.png" />
   </a>
 </p>
 
@@ -79,8 +79,8 @@ Você pode acessar o template do desafio em:
 - [Template Challenge](https://github.com/rocketseat-education/ignite-template-reactjs-criando-um-projeto-do-zero)
 
 ## ✉ License
+projeto licenciado pelo MIT.
 
-este projeto é licenciado pelo MIT.
 ---
 
 <p align="center">Made with 💜 by Vitor Franco</p>
