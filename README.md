@@ -21,19 +21,17 @@ Este projeto utiliza as seguintes tecnologias:
 
 ## 🔥 Preview
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ce18a521-f135-4123-a09f-e38826843ade/deploy-status)](https://todo-vf.netlify.app/)
+[spacetravelling](https://spacetravelling-vf.vercel.app/)
 
 <br>
 
 <p align="center">
-  <a href="https://todo-vf.netlify.app/" target="_blank">
-    <img alt="Preview App" title="Preview App" src=".github/logo-to-do.png" />
+  <a href="https://spacetravelling-vf.vercel.app/" target="_blank">
+    <img alt="Space Travelling" title="Space Travelling" width="150px" src=".github/spacetravelling-logo.png" />
   </a>
 </p>
 
 ## 🚀 Getting started
-
-
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
